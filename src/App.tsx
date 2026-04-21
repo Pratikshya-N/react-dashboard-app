@@ -1,8 +1,11 @@
+import MainLayout from "./layouts/MainLayout";
+import Dashboard from "./pages/Dashboard/Dashboard";
+
 function App() {
   return (
-    <div>
-      <h1>Incident Monitoring Dashboard</h1>
-    </div>
+    <MainLayout>
+      <Dashboard />
+    </MainLayout>
   );
 }
 
