@@ -7,6 +7,8 @@ import {
     Chip,
     TableSortLabel,
 } from "@mui/material";
+import { Incident } from "../../types/incident";
+
 
 const getColor = (status: string) => {
     if (status === "Open") return "error";
@@ -15,12 +17,12 @@ const getColor = (status: string) => {
 };
 
 type Props = {
-    data: any[];
-    order: "asc" | "desc";
-    orderBy: string;
-    setOrder: any;
-    setOrderBy: any;
-    onRowClick: (item: any) => void;
+  data: Incident[];
+  order: "asc" | "desc";
+  orderBy: string;
+  setOrder: (val: "asc" | "desc") => void;
+  setOrderBy: (val: string) => void;
+  onRowClick: (item: Incident) => void;
 };
 
 const IncidentTable = ({
@@ -31,6 +33,12 @@ const IncidentTable = ({
     setOrderBy,
     onRowClick,
 }: Props) => {
+
+    const handleSort = (field: "createdAt" | "severity") => {
+        const isAsc = orderBy === field && order === "asc";
+        setOrder(isAsc ? "desc" : "asc");
+        setOrderBy(field);
+    };
 
     return (
         <Table>
@@ -43,10 +51,7 @@ const IncidentTable = ({
                         <TableSortLabel
                             active={orderBy === "severity"}
                             direction={order}
-                            onClick={() => {
-                                setOrderBy("severity");
-                                setOrder(order === "asc" ? "desc" : "asc");
-                            }}
+                            onClick={() => handleSort("severity")}
                         >
                             Severity
                         </TableSortLabel>
@@ -58,10 +63,7 @@ const IncidentTable = ({
                         <TableSortLabel
                             active={orderBy === "createdAt"}
                             direction={order}
-                            onClick={() => {
-                                setOrderBy("createdAt");
-                                setOrder(order === "asc" ? "desc" : "asc");
-                            }}
+                            onClick={() => handleSort("createdAt")}
                         >
                             Created At
                         </TableSortLabel>

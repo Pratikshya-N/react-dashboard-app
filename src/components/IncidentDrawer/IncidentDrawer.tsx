@@ -9,7 +9,7 @@ import {
 type Props = {
   open: boolean;
   onClose: () => void;
-  incident: any;
+  incident: Incident | null;
 };
 
 const getColor = (status: string) => {

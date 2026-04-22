@@ -6,9 +6,11 @@ import { useDebounce } from "../../hooks/useDebounce";
 import { TablePagination } from "@mui/material";
 import IncidentDrawer from "../../components/IncidentDrawer/IncidentDrawer";
 import { Skeleton, Box } from "@mui/material";
+import { Incident } from "../../types/incident";
+import { SEVERITY_PRIORITY } from "../../constants/constants";
 
 const Dashboard = () => {
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<Incident[]>([]);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("");
     const [orderBy, setOrderBy] = useState<"createdAt" | "severity">("createdAt");
@@ -37,6 +39,10 @@ const Dashboard = () => {
         loadData();
     }, []);
 
+    useEffect(() => {
+        setPage(0);
+    }, [debouncedSearch, status]);
+
     const filteredData = data.filter((item) => {
         const searchText = debouncedSearch.toLowerCase();
 
@@ -50,26 +56,14 @@ const Dashboard = () => {
         return matchesSearch && matchesStatus
     });
 
-    const priority: Record<string, number> = {
-        Critical: 3,
-        High: 2,
-        Medium: 1,
-    };
-
     const sortedData = [...filteredData].sort((a, b) => {
-        if (orderBy === "createdAt") {
-            return order === "asc"
-                ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-                : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        }
-
         if (orderBy === "severity") {
             return order === "asc"
-                ? (priority[a.severity] || 0) - (priority[b.severity] || 0)
-                : (priority[b.severity] || 0) - (priority[a.severity] || 0);
+                ? (SEVERITY_PRIORITY[a.severity] || 0) -
+                (SEVERITY_PRIORITY[b.severity] || 0)
+                : (SEVERITY_PRIORITY[b.severity] || 0) -
+                (SEVERITY_PRIORITY[a.severity] || 0);
         }
-
-        return 0;
     });
 
     const paginatedData = sortedData.slice(
@@ -114,7 +108,9 @@ const Dashboard = () => {
             />
 
             {filteredData.length === 0 ? (
-                <div>No incidents found</div>
+                < Box sx={{ textAlign: "center", mt: 4 }}>
+                    <Typography>No incidents found</Typography>
+                </Box>
             ) : (
                 <IncidentTable
                     data={paginatedData}
