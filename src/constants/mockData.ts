@@ -5,6 +5,7 @@ export const incidents = [
     severity: "High",
     status: "Open",
     createdAt: "2026-04-20",
+    description: "CPU usage exceeded 90% for 10 minutes on production server.",
   },
   {
     id: "INC002",
@@ -12,6 +13,7 @@ export const incidents = [
     severity: "Medium",
     status: "Resolved",
     createdAt: "2026-04-18",
+    description: "Users were unable to login due to authentication service issue.",
   },
   {
     id: "INC003",
@@ -19,5 +21,30 @@ export const incidents = [
     severity: "Critical",
     status: "Open",
     createdAt: "2026-04-19",
+    description: "Database requests timing out due to high load.",
+  },
+  {
+    id: "INC004",
+    title: "Memory Leak Detected",
+    severity: "High",
+    status: "Open",
+    createdAt: "2026-04-17",
+    description: "Application memory usage increasing continuously.",
+  },
+  {
+    id: "INC005",
+    title: "API Response Delay",
+    severity: "Medium",
+    status: "Resolved",
+    createdAt: "2026-04-16",
+    description: "API response time increased beyond acceptable threshold.",
+  },
+  {
+    id: "INC006",
+    title: "Disk Space Full",
+    severity: "Critical",
+    status: "Open",
+    createdAt: "2026-04-15",
+    description: "Disk usage reached 100% on main server.",
   },
 ];
