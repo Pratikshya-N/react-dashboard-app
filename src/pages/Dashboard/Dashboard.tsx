@@ -5,6 +5,7 @@ import Filters from "../../components/Filters/Filters";
 import { useDebounce } from "../../hooks/useDebounce";
 import { TablePagination } from "@mui/material";
 import IncidentDrawer from "../../components/IncidentDrawer/IncidentDrawer";
+import { Skeleton, Box } from "@mui/material";
 
 const Dashboard = () => {
     const [data, setData] = useState<any[]>([]);
@@ -16,13 +17,21 @@ const Dashboard = () => {
     const [rowsPerPage, setRowsPerPage] = useState(4);
     const [selectedIncident, setSelectedIncident] = useState<any>(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     const debouncedSearch = useDebounce(search, 500);
 
     useEffect(() => {
         const loadData = async () => {
-            const res: any = await fetchIncidents();
-            setData(res);
+            try {
+                const res: any = await fetchIncidents();
+                setData(res);
+            } catch (err) {
+                setError("Failed to load incidents");
+            } finally {
+                setLoading(false);
+            }
         };
 
         loadData();
@@ -31,10 +40,14 @@ const Dashboard = () => {
     const filteredData = data.filter((item) => {
         const searchText = debouncedSearch.toLowerCase();
 
-        return (
-            item.title.toLowerCase().includes(searchText) &&
-            (status ? item.status === status : true)
-        );
+        const matchesSearch =
+            item.title.toLowerCase().includes(searchText) ||
+            item.id.toLowerCase().includes(searchText) ||
+            item.severity.toLowerCase().includes(searchText);
+
+        const matchesStatus = status ? item.status === status : true;
+
+        return matchesSearch && matchesStatus
     });
 
     const priority: Record<string, number> = {
@@ -69,10 +82,28 @@ const Dashboard = () => {
         setDrawerOpen(true);
     };
 
-    console.log("DATA:", data);
-    console.log("SELECTED:", selectedIncident);
+
+
+    if (loading) {
+        return (
+            <Box sx={{ p: 2 }}>
+                {[...Array(5)].map((_, i) => (
+                    <Skeleton
+                        key={i}
+                        variant="rectangular"
+                        height={40}
+                        sx={{ mb: 1 }}
+                    />
+                ))}
+            </Box>
+        );
+    }
+
+
+    if (error) return <div>{error}</div>;
+
     return (
-        <div>
+        <div style={{ padding: "16px" }}>
             <h2>Incidents</h2>
 
             <Filters
@@ -82,14 +113,18 @@ const Dashboard = () => {
                 setStatus={setStatus}
             />
 
-            <IncidentTable
-                data={paginatedData}
-                order={order}
-                orderBy={orderBy}
-                setOrder={setOrder}
-                setOrderBy={setOrderBy}
-                onRowClick={handleRowClick}
-            />
+            {filteredData.length === 0 ? (
+                <div>No incidents found</div>
+            ) : (
+                <IncidentTable
+                    data={paginatedData}
+                    order={order}
+                    orderBy={orderBy}
+                    setOrder={setOrder}
+                    setOrderBy={setOrderBy}
+                    onRowClick={handleRowClick}
+                />
+            )}
 
             <IncidentDrawer
                 open={drawerOpen}

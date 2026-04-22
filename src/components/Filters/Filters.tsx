@@ -1,4 +1,4 @@
-import { Box, TextField, MenuItem } from "@mui/material";
+import { Box, TextField, MenuItem, Button } from "@mui/material";
 
 type Props = {
   search: string;
@@ -27,6 +27,18 @@ const Filters = ({ search, setSearch, status, setStatus }: Props) => {
         <MenuItem value="Open">Open</MenuItem>
         <MenuItem value="Resolved">Resolved</MenuItem>
       </TextField>
+
+      <Button
+        variant="outlined"
+        sx={{ height: 56 }}
+        onClick={() => {
+          setSearch("");
+          setStatus("");
+        }}
+      >
+        Clear
+      </Button>
+
     </Box>
   );
 };
