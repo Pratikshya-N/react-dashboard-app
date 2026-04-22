@@ -3,6 +3,9 @@
 A production-style React dashboard that simulates real-time incident tracking with filtering, sorting, and detailed views.
 
 ---
+## Live Demo
+
+https://react-dashboard-app-livid.vercel.app
 
 ## Features
 
